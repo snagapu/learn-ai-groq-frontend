@@ -1,22 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Learn.AI - Chat</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
 <body>
-
-  <!-- Header -->
   <header id="page-header">
-    <h1>Learn.ai - Your AI Cooking Tutor 🍳</h1>
+    <h1>Learn.ai - The Skill Portal 🍳</h1>
   </header>
 
-  <!-- Chat area -->
-  <div id="chat-container"></div>
+  <!-- Wrap chat messages inside #chat-content -->
+  <div id="chat-container">
+    <div id="chat-content"></div> <!-- This is where messages will go -->
+  </div>
 
-  <!-- Input controls -->
   <div id="input-container">
     <input type="text" id="prompt" placeholder="Ask a question..." />
     <button id="send-btn">Ask</button>
@@ -25,8 +16,6 @@
     <button id="resume-btn" class="hidden">Resume</button>
   </div>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="app.js"></script>
 </body>
-</html>
