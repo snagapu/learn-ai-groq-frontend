@@ -5,7 +5,7 @@ async function askQuestion() {
   answerDiv.innerHTML = "Thinking...";
 
   try {
-    const res = await fetch("https://your-backend-url.onrender.com/api/tutor", {
+    const res = await fetch("https://learn-ai-groq-backend.onrender.com/api/tutor", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
