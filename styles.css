@@ -79,3 +79,20 @@ button {
 .hidden {
   display: none;
 }
+.speak-btn, .pause-btn, .resume-btn {
+  margin-left: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.speak-btn:hover, .pause-btn:hover, .resume-btn:hover {
+  background-color: #0055a5;
+}
+
+.hidden {
+  display: none;
+}
