@@ -21,7 +21,7 @@ sendBtn.addEventListener("click", async () => {
   promptInput.value = "";
 
   try {
-    const response = await fetch("https://your-backend-url.onrender.com/api/tutor", {
+    const response = await fetch("https://learn-ai-groq-backend.onrender.com/api/tutor", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
