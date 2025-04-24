@@ -31,7 +31,7 @@ sendButton.addEventListener("click", async () => {
 
   // Call backend API
   try {
-    const response = await fetch("/api/tutor", {
+    const response = await fetch("https://learn-ai-groq-backend.onrender.com/api/tutor", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
