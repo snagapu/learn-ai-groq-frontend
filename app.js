@@ -5,25 +5,83 @@ let messages = [];
 const chatContainer = document.getElementById("chat-container");
 const promptInput = document.getElementById("prompt");
 const sendButton = document.getElementById("send-btn");
-const speakButton = document.getElementById("speak-btn");
-const pauseButton = document.getElementById("pause-btn");
-const resumeButton = document.getElementById("resume-btn");
-
-let utterance = null;
-let speechSynthesisActive = false;
 
 // Display messages in the chat
 function displayMessages() {
   chatContainer.innerHTML = ''; // Clear previous chat
-  messages.forEach(msg => {
+  messages.forEach((msg, index) => {
     const msgDiv = document.createElement("div");
     msgDiv.classList.add("message", msg.role);
+    
+    // Display message content
     if (msg.role === 'user') {
       msgDiv.textContent = `You: ${msg.content}`;
     } else {
       msgDiv.innerHTML = `<strong>Shri-AI:</strong> ${marked.parse(msg.content)}`;
     }
+    
     chatContainer.appendChild(msgDiv);
+
+    // Add buttons for each bot response
+    if (msg.role === 'assistant') {
+      addSpeechButtons(msgDiv, index);
+    }
+  });
+}
+
+// Add speak, pause, and resume buttons for each response
+function addSpeechButtons(msgDiv, index) {
+  const speakButton = document.createElement("button");
+  speakButton.textContent = "Speak";
+  speakButton.classList.add("speak-btn");
+  msgDiv.appendChild(speakButton);
+
+  const pauseButton = document.createElement("button");
+  pauseButton.textContent = "Pause";
+  pauseButton.classList.add("pause-btn", "hidden");
+  msgDiv.appendChild(pauseButton);
+
+  const resumeButton = document.createElement("button");
+  resumeButton.textContent = "Resume";
+  resumeButton.classList.add("resume-btn", "hidden");
+  msgDiv.appendChild(resumeButton);
+
+  let utterance = null;
+
+  // Function to speak the answer with the default voice
+  speakButton.addEventListener("click", () => {
+    if (msg.content) {
+      utterance = new SpeechSynthesisUtterance(msg.content);
+
+      // Get available voices
+      const voices = speechSynthesis.getVoices();
+      utterance.voice = voices[0]; // Default voice (neutral)
+
+      // Make the speech more natural
+      utterance.rate = 1; // Speed of speech
+      utterance.pitch = 1; // Pitch of the voice
+      utterance.volume = 1; // Volume level
+
+      // Speak the text
+      speechSynthesis.speak(utterance);
+
+      // Show pause and resume buttons
+      pauseButton.classList.remove("hidden");
+      resumeButton.classList.add("hidden");
+
+      // Pause and Resume functionality
+      pauseButton.addEventListener("click", () => {
+        speechSynthesis.pause();
+        pauseButton.classList.add("hidden");
+        resumeButton.classList.remove("hidden");
+      });
+
+      resumeButton.addEventListener("click", () => {
+        speechSynthesis.resume();
+        pauseButton.classList.remove("hidden");
+        resumeButton.classList.add("hidden");
+      });
+    }
   });
 }
 
@@ -53,62 +111,7 @@ sendButton.addEventListener("click", async () => {
     const botMessage = { role: "assistant", content: data.answer };
     messages.push(botMessage);
     displayMessages();
-
-    // Show the speak button once the answer is received
-    speakButton.style.display = 'block';
-
-    // Save the answer for future use
-    window.latestAnswer = botMessage.content;
   } catch (err) {
     console.error(err);
-  }
-});
-
-// Function to speak the answer with the default voice (no accent)
-speakButton.addEventListener("click", () => {
-  if (window.latestAnswer) {
-    speak(window.latestAnswer);
-  }
-});
-
-// Function to speak using the default voice
-function speak(text) {
-  utterance = new SpeechSynthesisUtterance(text);
-
-  // Get available voices
-  const voices = speechSynthesis.getVoices();
-  
-  // Use the first available voice (no Indian accent)
-  utterance.voice = voices[0]; // Default voice (neutral or preferred system voice)
-  
-  // Make the speech more natural
-  utterance.rate = 1; // Speed of speech
-  utterance.pitch = 1; // Pitch of the voice
-  utterance.volume = 1; // Volume level
-
-  // Speak the text
-  speechSynthesis.speak(utterance);
-  speechSynthesisActive = true;
-
-  // Show pause and resume buttons once speaking starts
-  pauseButton.style.display = 'block';
-  resumeButton.style.display = 'none';
-}
-
-// Pause speech
-pauseButton.addEventListener("click", () => {
-  if (speechSynthesisActive) {
-    speechSynthesis.pause();
-    pauseButton.style.display = 'none';
-    resumeButton.style.display = 'block';
-  }
-});
-
-// Resume speech
-resumeButton.addEventListener("click", () => {
-  if (speechSynthesisActive) {
-    speechSynthesis.resume();
-    pauseButton.style.display = 'block';
-    resumeButton.style.display = 'none';
   }
 });
