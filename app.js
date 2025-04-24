@@ -1,78 +1,55 @@
-import React, { useState, useRef, useEffect } from "react";
-import ChatWindow from "./components/ChatWindow";
-import './styles.css';  // Importing the custom CSS
+const chatContainer = document.getElementById("chat-container");
+const promptInput = document.getElementById("prompt");
+const sendBtn = document.getElementById("send-btn");
+const toggleBtn = document.getElementById("toggle-dark");
 
-function App() {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
-  const [darkMode, setDarkMode] = useState(false);
-  const chatRef = useRef(null);
+let messages = [];
 
-  useEffect(() => {
-    chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages]);
-
-  const sendMessage = async () => {
-    if (!input.trim()) return;
-
-    const userMessage = { role: "user", content: input };
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
-
-    try {
-      const res = await fetch("/api/tutor", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: [...messages, userMessage] }),
-      });
-      const data = await res.json();
-      setMessages((prev) => [...prev, { role: "assistant", content: data.answer }]);
-
-      // Voice Playback
-      speak(data.answer);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const speak = (text) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    speechSynthesis.speak(utterance);
-  };
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
-  }, [darkMode]);
-
-  return (
-    <div className={`app-container ${darkMode ? 'dark-mode' : ''}`}>
-      <div className="header">
-        <header className="app-header">
-          Learn.ai - Your AI Tutor
-        </header>
-        <button onClick={() => setDarkMode(!darkMode)} className="dark-mode-toggle">
-          {darkMode ? "Light Mode" : "Dark Mode"}
-        </button>
-      </div>
-
-      <div className="chat-container" ref={chatRef}>
-        <ChatWindow messages={messages} />
-      </div>
-
-      <div className="input-container">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          className="input-box"
-          placeholder="Ask a question..."
-        />
-        <button onClick={sendMessage} className="send-btn">
-          Ask
-        </button>
-      </div>
-    </div>
-  );
+function appendMessage(role, content) {
+  const div = document.createElement("div");
+  div.className = "message";
+  div.innerHTML = `<div class="${role}">${role === "user" ? "You" : "AI"}:</div>
+                   <div class="bot">${content}</div>`;
+  chatContainer.appendChild(div);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-export default App;
+async function sendMessage() {
+  const input = promptInput.value.trim();
+  if (!input) return;
+
+  const userMessage = { role: "user", content: input };
+  messages.push(userMessage);
+  appendMessage("user", input);
+  promptInput.value = "";
+
+  try {
+    const res = await fetch("https://learn-ai-groq-backend.onrender.com/api/tutor", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages }),
+    });
+    const data = await res.json();
+    const botMessage = data.answer;
+    messages.push({ role: "assistant", content: botMessage });
+    appendMessage("assistant", botMessage);
+    speak(botMessage);
+  } catch (err) {
+    console.error("Error:", err);
+    appendMessage("assistant", "Sorry, something went wrong.");
+  }
+}
+
+function speak(text) {
+  const utterance = new SpeechSynthesisUtterance(text);
+  speechSynthesis.speak(utterance);
+}
+
+sendBtn.addEventListener("click", sendMessage);
+promptInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") sendMessage();
+});
+
+toggleBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+});
