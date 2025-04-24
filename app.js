@@ -19,18 +19,18 @@ function displayMessages() {
     } else {
       msgDiv.innerHTML = `<strong>Shri-AI:</strong> ${marked.parse(msg.content)}`;
     }
-    
+
     chatContainer.appendChild(msgDiv);
 
     // Add buttons for each bot response
     if (msg.role === 'assistant') {
-      addSpeechButtons(msgDiv, index);
+      addSpeechButtons(msgDiv, msg, index);  // Pass msg to addSpeechButtons
     }
   });
 }
 
 // Add speak, pause, and resume buttons for each response
-function addSpeechButtons(msgDiv, index) {
+function addSpeechButtons(msgDiv, msg, index) {
   const speakButton = document.createElement("button");
   speakButton.textContent = "Speak";
   speakButton.classList.add("speak-btn");
