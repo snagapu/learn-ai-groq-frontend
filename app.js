@@ -1,8 +1,5 @@
 // Store the messages in an array
 let messages = [];
-let speechSynthesisUtterance = null;
-let isPaused = false;
-let speechInstance = null;
 
 // Elements
 const chatContainer = document.getElementById("chat-container");
@@ -11,6 +8,9 @@ const sendButton = document.getElementById("send-btn");
 const speakButton = document.getElementById("speak-btn");
 const pauseButton = document.getElementById("pause-btn");
 const resumeButton = document.getElementById("resume-btn");
+
+let utterance = null;
+let speechSynthesisActive = false;
 
 // Display messages in the chat
 function displayMessages() {
@@ -57,64 +57,57 @@ sendButton.addEventListener("click", async () => {
     // Show the speak button once the answer is received
     speakButton.style.display = 'block';
 
-    // Save the answer for speech synthesis
+    // Save the answer for future use
     window.latestAnswer = botMessage.content;
   } catch (err) {
     console.error(err);
   }
 });
 
-// Function to speak the answer with Indian accent
+// Function to speak the answer with the default voice (no accent)
 speakButton.addEventListener("click", () => {
   if (window.latestAnswer) {
     speak(window.latestAnswer);
   }
 });
 
-// Function to speak using the Indian accent
+// Function to speak using the default voice
 function speak(text) {
-  const utterance = new SpeechSynthesisUtterance(text);
+  utterance = new SpeechSynthesisUtterance(text);
 
   // Get available voices
   const voices = speechSynthesis.getVoices();
-
-  // Try to find an Indian accent voice
-  const indianVoice = voices.find(voice => voice.name.toLowerCase().includes("indian"));
-  if (indianVoice) {
-    utterance.voice = indianVoice;
-  } else {
-    // If no Indian accent is found, use a neutral voice
-    utterance.voice = voices[0]; // Default voice (neutral)
-  }
-
+  
+  // Use the first available voice (no Indian accent)
+  utterance.voice = voices[0]; // Default voice (neutral or preferred system voice)
+  
   // Make the speech more natural
   utterance.rate = 1; // Speed of speech
   utterance.pitch = 1; // Pitch of the voice
   utterance.volume = 1; // Volume level
 
-  // Start speaking
+  // Speak the text
   speechSynthesis.speak(utterance);
-  speechInstance = speechSynthesis.speak(utterance);
-  speakButton.style.display = 'none';
+  speechSynthesisActive = true;
+
+  // Show pause and resume buttons once speaking starts
   pauseButton.style.display = 'block';
   resumeButton.style.display = 'none';
 }
 
-// Pause the speech
+// Pause speech
 pauseButton.addEventListener("click", () => {
-  if (speechInstance && !isPaused) {
+  if (speechSynthesisActive) {
     speechSynthesis.pause();
-    isPaused = true;
     pauseButton.style.display = 'none';
     resumeButton.style.display = 'block';
   }
 });
 
-// Resume the speech
+// Resume speech
 resumeButton.addEventListener("click", () => {
-  if (speechInstance && isPaused) {
+  if (speechSynthesisActive) {
     speechSynthesis.resume();
-    isPaused = false;
     pauseButton.style.display = 'block';
     resumeButton.style.display = 'none';
   }
