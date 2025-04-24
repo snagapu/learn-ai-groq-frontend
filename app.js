@@ -13,18 +13,25 @@ const resumeButton = document.getElementById("resume-btn");
 
 // Display messages in the chat
 function displayMessages() {
-  chatContainer.innerHTML = ''; // Clear previous chat
+  // Clear the chat content but preserve the header
+  const chatContent = chatContainer.querySelector("#chat-content");
+  chatContent.innerHTML = ''; // Clear previous chat
+
   messages.forEach(msg => {
     const msgDiv = document.createElement("div");
     msgDiv.classList.add("message", msg.role);
-  if (msg.role === 'user') {
-    msgDiv.textContent = `You: ${msg.content}`;
-  } else {
-    msgDiv.innerHTML = `<strong>Bot:</strong> ${marked.parse(msg.content)}`;
-  }
-    chatContainer.appendChild(msgDiv);
+
+    // Check role to display message with respective text (User or Shri-AI)
+    if (msg.role === 'user') {
+      msgDiv.textContent = `You: ${msg.content}`;
+    } else {
+      msgDiv.innerHTML = `<strong>Shri-AI:</strong> ${marked.parse(msg.content)}`;
+    }
+
+    chatContent.appendChild(msgDiv);
   });
 }
+
 
 // Send a message to the backend and get the response
 sendButton.addEventListener("click", async () => {
