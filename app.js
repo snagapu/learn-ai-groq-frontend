@@ -1,11 +1,15 @@
 // Store the messages in an array
 let messages = [];
+let speechSynthesisUtterance = null;
+let isSpeaking = false;
 
 // Elements
 const chatContainer = document.getElementById("chat-container");
 const promptInput = document.getElementById("prompt");
 const sendButton = document.getElementById("send-btn");
 const speakButton = document.getElementById("speak-btn");
+const pauseButton = document.getElementById("pause-btn");
+const resumeButton = document.getElementById("resume-btn");
 
 // Display messages in the chat
 function displayMessages() {
@@ -83,6 +87,33 @@ function speak(text) {
   utterance.pitch = 1; // Pitch of the voice
   utterance.volume = 1; // Volume level
 
+  // Store the utterance object for future use (pause/resume)
+  speechSynthesisUtterance = utterance;
+
   // Speak the text
   speechSynthesis.speak(utterance);
+  isSpeaking = true;
+  speakButton.style.display = 'none';
+  pauseButton.style.display = 'block';
+  resumeButton.style.display = 'none';
 }
+
+// Pause speech
+pauseButton.addEventListener("click", () => {
+  if (speechSynthesisUtterance) {
+    speechSynthesis.pause();
+    isSpeaking = false;
+    pauseButton.style.display = 'none';
+    resumeButton.style.display = 'block';
+  }
+});
+
+// Resume speech
+resumeButton.addEventListener("click", () => {
+  if (speechSynthesisUtterance) {
+    speechSynthesis.resume();
+    isSpeaking = true;
+    pauseButton.style.display = 'block';
+    resumeButton.style.display = 'none';
+  }
+});
