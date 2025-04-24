@@ -17,7 +17,11 @@ function displayMessages() {
   messages.forEach(msg => {
     const msgDiv = document.createElement("div");
     msgDiv.classList.add("message", msg.role);
-    msgDiv.textContent = `${msg.role === 'user' ? 'You: ' : 'Bot: '} ${msg.content}`;
+  if (msg.role === 'user') {
+    msgDiv.textContent = `You: ${msg.content}`;
+  } else {
+    msgDiv.innerHTML = `<strong>Bot:</strong> ${marked.parse(msg.content)}`;
+  }
     chatContainer.appendChild(msgDiv);
   });
 }
