@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import ChatWindow from "./components/ChatWindow";
+import './App.css';  // Importing the custom CSS
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -44,35 +45,29 @@ function App() {
   }, [darkMode]);
 
   return (
-    <div className={`flex flex-col h-screen ${darkMode ? "dark:bg-gray-900" : "bg-gray-50"} text-gray-900 dark:text-gray-100`}>
-      <div className="flex justify-between p-4">
-        <header className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white p-4 text-center text-xl font-bold shadow-md flex-1">
+    <div className={`app-container ${darkMode ? 'dark-mode' : ''}`}>
+      <div className="header">
+        <header className="app-header">
           Learn.ai - Your AI Tutor
         </header>
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          className="bg-gray-700 text-white px-3 py-2 rounded-full"
-        >
+        <button onClick={() => setDarkMode(!darkMode)} className="dark-mode-toggle">
           {darkMode ? "Light Mode" : "Dark Mode"}
         </button>
       </div>
 
-      <div className="flex-1 overflow-hidden flex flex-col" ref={chatRef}>
+      <div className="chat-container" ref={chatRef}>
         <ChatWindow messages={messages} />
       </div>
 
-      <div className="p-4 flex flex-col sm:flex-row gap-2 border-t bg-white dark:bg-gray-800">
+      <div className="input-container">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="flex-1 border rounded-xl p-2 shadow"
+          className="input-box"
           placeholder="Ask a question..."
         />
-        <button
-          onClick={sendMessage}
-          className="bg-purple-600 text-white px-4 py-2 rounded-xl shadow hover:bg-purple-700"
-        >
+        <button onClick={sendMessage} className="send-btn">
           Ask
         </button>
       </div>
