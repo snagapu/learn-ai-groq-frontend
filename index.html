@@ -1,19 +1,61 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Learn.ai Tutor</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <title>Learn.AI - Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    #chat-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      background: #f2f2f2;
+    }
+    .message {
+      margin-bottom: 1rem;
+    }
+    .user {
+      font-weight: bold;
+      color: #333;
+    }
+    .bot {
+      background: #fff;
+      padding: 0.75rem;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    #input-container {
+      display: flex;
+      padding: 1rem;
+      background: #fff;
+      border-top: 1px solid #ddd;
+    }
+    #prompt {
+      flex: 1;
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+    #send-btn {
+      margin-left: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Learn.ai Tutor</h1>
-    <textarea id="question" placeholder="Ask me anything..."></textarea>
-    <button onclick="askQuestion()">Ask</button>
-    <div id="answer"></div>
+  <div id="chat-container"></div>
+  <div id="input-container">
+    <input type="text" id="prompt" placeholder="Ask a question..." />
+    <button id="send-btn">Ask</button>
   </div>
   <script src="app.js"></script>
 </body>
