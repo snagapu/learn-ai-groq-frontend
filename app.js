@@ -14,7 +14,8 @@ async function askQuestion() {
     });
 
     const data = await res.json();
-    answerDiv.innerHTML = data.answer || "No response received.";
+    answerDiv.innerHTML = marked.parse(data.answer || "No response received.");
+
   } catch (err) {
     answerDiv.innerHTML = "Error: " + err.message;
   }
