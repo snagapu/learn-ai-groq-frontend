@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import ChatWindow from "./components/ChatWindow";
-import './App.css';  // Importing the custom CSS
+import './styles.css';  // Importing the custom CSS
 
 function App() {
   const [messages, setMessages] = useState([]);
